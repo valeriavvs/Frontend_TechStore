@@ -1,0 +1,82 @@
+<div class="productos-page">
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+  <div class="bg-shape shape-3"></div>
+
+  <div class="login-wrapper" *ngIf="esAdmin; else sinPermiso">
+    <div class="form-panel">
+      <div class="form-card">
+        <div class="form-header">
+          <h2>{{ tituloFormulario }}</h2>
+          <p>Completa la informacion del producto</p>
+        </div>
+
+        <div class="actions top-actions">
+		  <a class="btn secondary" routerLink="/productos">Volver al catalogo</a>
+		</div>
+
+        <div class="form-grid">
+		  <div class="input-group">
+			<label for="nombre">Nombre</label>
+			<input id="nombre" type="text" [(ngModel)]="productoForm.nombre" placeholder="Ej: Laptop Gamer" />
+		  </div>
+
+		  <div class="input-group">
+			<label for="precio">Precio</label>
+			<input id="precio" type="number" min="0" step="0.01" [(ngModel)]="productoForm.precio" placeholder="0.00" />
+		  </div>
+
+		  <div class="input-group">
+			<label for="stock">Stock</label>
+			<input id="stock" type="number" min="0" [(ngModel)]="productoForm.stock" placeholder="0" />
+		  </div>
+
+		  <div class="input-group">
+			<label for="imagen">URL o ID de Drive</label>
+			<input id="imagen" type="text" [(ngModel)]="productoForm.imagen" placeholder="Ej: 1wiNZQq8WELuGVxXZGgrno52H9h36e2H9" />
+		  </div>
+
+		  <div class="input-group full">
+			<label for="descripcion">Descripcion</label>
+			<textarea id="descripcion" rows="3" [(ngModel)]="productoForm.descripcion" placeholder="Describe el producto"></textarea>
+		  </div>
+
+		  <div class="input-group check full">
+			<label class="check-row">
+			  <input type="checkbox" [(ngModel)]="productoForm.activo" />
+			  <span>Activo</span>
+			</label>
+		  </div>
+		</div>
+
+		<div class="actions bottom-actions">
+		  <button type="button" class="login-btn" [disabled]="guardando" (click)="guardar()">
+			{{ editandoId ? 'Guardar cambios' : 'Registrar producto' }}
+		  </button>
+		  <button type="button" class="register-link" [disabled]="guardando" (click)="prepararNuevo()">Limpiar formulario</button>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #sinPermiso>
+  <div class="login-page login-page--restricted">
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <div class="login-wrapper restricted-wrapper">
+      <div class="form-panel">
+        <div class="form-card">
+          <div class="form-header">
+            <h2>Sin permisos</h2>
+            <p>Regresa al catalogo para seguir navegando</p>
+          </div>
+
+          <a class="login-btn login-btn--link" routerLink="/productos">Volver al catalogo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

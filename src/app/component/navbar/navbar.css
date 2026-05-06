@@ -1,0 +1,137 @@
+.sidenav-container {
+  height: 100dvh;
+  background: transparent;
+}
+
+mat-sidenav-content {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 72px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #5b3f31 0%, #7a5a48 55%, #8b674f 100%);
+  color: #fff8f2;
+  box-shadow: 0 10px 24px rgba(63, 47, 40, 0.22);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.brand-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-button {
+  margin-right: 4px;
+  color: #fff8f2;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.menu-button:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  letter-spacing: 0.6px;
+  color: #fff8f2;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: 0.25s ease;
+}
+
+.titulo:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.titulo-icon {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.titulo-texto {
+  text-transform: none;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-button {
+  color: #fff8f2;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.action-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.logout-button {
+  background: rgba(196, 88, 61, 0.28);
+}
+
+mat-sidenav {
+  width: 250px;
+  background: linear-gradient(180deg, #fbf2e8 0%, #f3e0ca 100%);
+  border-right: 1px solid rgba(117, 82, 60, 0.12);
+}
+
+mat-nav-list a {
+  border-radius: 14px;
+  margin: 8px 10px;
+  transition: 0.25s ease;
+  color: #50362c;
+}
+
+mat-nav-list a:hover {
+  background: rgba(122, 90, 72, 0.12);
+}
+
+.contenido {
+  padding: 28px 20px 36px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+mat-toolbar button mat-icon {
+  color: currentColor;
+}
+
+.usuario {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px;
+  font-weight: bold;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.16);
+  padding: 8px 14px;
+  border-radius: 999px;
+}

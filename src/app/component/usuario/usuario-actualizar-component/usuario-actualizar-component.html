@@ -1,0 +1,113 @@
+<div class="usuarios-page" *ngIf="esAdmin">
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+  <div class="bg-shape shape-3"></div>
+
+  <div class="login-wrapper">
+    <div class="form-panel">
+      <div class="form-card">
+        <div class="form-header">
+          <h2>Actualizar usuario</h2>
+          <p>Edita rol, nombre, correo y contrasena desde una sola vista</p>
+        </div>
+
+        <div class="actions top-actions">
+          <a class="btn secondary" routerLink="/productos">Volver al catalogo</a>
+        </div>
+
+        <section class="bloque-listado">
+          <div class="input-group full">
+            <label for="filtroUsuarios">Filtrar usuarios (nombre o correo)</label>
+            <input
+              id="filtroUsuarios"
+              type="text"
+              [(ngModel)]="filtroUsuarios"
+              placeholder="Ej: maria o maria@techstore.com"
+              [disabled]="cargando || guardando"
+            />
+          </div>
+
+          <div class="listado-wrap">
+            <div class="estado" *ngIf="cargando">Cargando usuarios...</div>
+            <div class="estado" *ngIf="!cargando && usuarios.length === 0">No hay usuarios registrados.</div>
+            <div class="estado" *ngIf="!cargando && usuarios.length > 0 && usuariosFiltrados.length === 0">
+              No hay coincidencias para el filtro.
+            </div>
+
+            <table class="tabla-usuarios" *ngIf="!cargando && usuariosFiltrados.length > 0">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Rol</th>
+                  <th class="acciones-col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let usuario of usuariosFiltrados">
+                  <td>{{ usuario.nombre }}</td>
+                  <td>{{ usuario.email }}</td>
+                  <td>{{ usuario.rol }}</td>
+                  <td class="acciones-col">
+                    <button
+                      type="button"
+                      class="icon-pencil"
+                      (click)="seleccionarUsuario(usuario)"
+                      [disabled]="guardando"
+                      title="Editar usuario"
+                      aria-label="Editar usuario"
+                    >
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zm16.7-10.54a1 1 0 0 0 0-1.41l-1.99-1.99a1 1 0 0 0-1.41 0l-1.56 1.56 3.75 3.75 1.21-1.21z" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="form-grid" *ngIf="usuarioCargado">
+          <div class="input-group">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" [(ngModel)]="usuarioForm.nombre" [disabled]="guardando" />
+          </div>
+
+          <div class="input-group">
+            <label for="email">Correo</label>
+            <input id="email" type="email" [(ngModel)]="usuarioForm.email" [disabled]="guardando" />
+          </div>
+
+          <div class="input-group">
+            <label for="rol">Rol</label>
+            <select id="rol" [(ngModel)]="usuarioForm.rol" [disabled]="guardando">
+              <option value="USER">USER</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label for="password">Nueva contrasena (opcional)</label>
+            <input
+              id="password"
+              type="password"
+              [(ngModel)]="usuarioForm.password"
+              placeholder="Dejalo vacio para no cambiarla"
+              [disabled]="guardando"
+            />
+          </div>
+        </section>
+
+        <div class="actions bottom-actions" *ngIf="usuarioCargado">
+          <button type="button" class="login-btn" [disabled]="guardando" (click)="guardarCambios()">
+            {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+          <button type="button" class="register-link" [disabled]="guardando" (click)="limpiarFormulario()">
+            Limpiar formulario
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

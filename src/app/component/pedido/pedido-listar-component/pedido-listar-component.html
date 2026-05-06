@@ -1,0 +1,114 @@
+<section class="pedidos-page">
+  <header class="pedidos-header">
+    <div>
+      <p class="eyebrow">Pedidos</p>
+      <h1>{{ esAdmin ? 'Todos los pedidos' : 'Mis pedidos' }}</h1>
+      <p class="subtitle">
+        {{ esAdmin ? 'Gestiona el estado de de los pedidos.' : 'Revisa el historial de tus compras.' }}
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <select
+        *ngIf="esAdmin"
+        class="filter-select"
+        [(ngModel)]="estadoFiltro"
+        aria-label="Filtrar por estado"
+      >
+        <option value="">Todos los estados</option>
+        <option *ngFor="let estado of estadosDisponibles" [value]="estado">
+          {{ estado }}
+        </option>
+      </select>
+      <a class="back-button" routerLink="/productos">Volver a productos</a>
+    </div>
+  </header>
+
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+
+  <div class="table-wrapper" *ngIf="!cargando && pedidosFiltrados.length > 0; else emptyState">
+    <table class="pedidos-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fecha</th>
+          <th>Cliente</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Detalles</th>
+          <th *ngIf="esAdmin">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let pedido of pedidosFiltrados; trackBy: trackByPedidoId">
+          <tr>
+            <td>#{{ pedido.id }}</td>
+            <td>{{ obtenerFecha(pedido) }}</td>
+            <td>
+              <div class="cliente-info">
+                <strong>{{ pedido.nombreCliente }}</strong>
+              </div>
+            </td>
+            <td>{{ pedido.total | currency:'PEN':'S/ ' }}</td>
+            <td>
+              <span class="estado-badge" [ngClass]="pedido.estado.toLowerCase()">
+                {{ pedido.estado }}
+              </span>
+            </td>
+            <td>
+              <button class="link-button" type="button" (click)="toggleDetalles(pedido)">
+                {{ tieneDetallesVisibles(pedido) ? 'Ocultar' : 'Ver' }}
+                {{ formatearDetalles(pedido) }}
+              </button>
+            </td>
+            <td *ngIf="esAdmin">
+              <div class="acciones-admin">
+                <select [(ngModel)]="estadoEdicion[pedido.id!]">
+                  <option value="">Cambiar a...</option>
+                  <option *ngFor="let estado of estadosDisponibles" [value]="estado">
+                    {{ estado }}
+                  </option>
+                </select>
+                <button class="save-button" type="button" [disabled]="!estadoEdicion[pedido.id!]" (click)="guardarEstado(pedido)">Guardar</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="tieneDetallesVisibles(pedido)">
+            <td [attr.colspan]="esAdmin ? 7 : 6">
+              <div class="detalles-box">
+                <h3>Detalle del pedido</h3>
+
+                <div *ngIf="pedido.detalles?.length; else noDetalles" class="detalle-lista">
+                  <article class="detalle-item" *ngFor="let detalle of pedido.detalles">
+                    <div>
+                      <strong>{{ detalle.nombreProducto }}</strong>
+                      <p>Cantidad: {{ detalle.cantidad }}</p>
+                    </div>
+                    <div>
+                      <p>Precio: {{ detalle.precioUnitario | currency:'PEN':'S/ ' }}</p>
+                      <p>Subtotal: {{ detalle.subTotal | currency:'PEN':'S/ ' }}</p>
+                    </div>
+                  </article>
+                </div>
+
+                <ng-template #noDetalles>
+                  <p class="empty-inline">Este pedido no tiene detalles cargados.</p>
+                </ng-template>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state" *ngIf="!cargando && !error">
+      <h2>No hay pedidos para mostrar</h2>
+      <p>
+        {{ esAdmin ? 'Todavía no existen pedidos registrados.' : 'Aún no has realizado compras.' }}
+      </p>
+    </div>
+  </ng-template>
+</section>

@@ -1,0 +1,69 @@
+<div class="login-page">
+  <div class="bg-shape shape-1"></div>
+  <div class="bg-shape shape-2"></div>
+  <div class="bg-shape shape-3"></div>
+
+  <div class="login-wrapper">
+    <div class="brand-panel">
+      <div class="brand-badge">⚡ Tecnologia & innovacion</div>
+      <h1>TechStore Pro</h1>
+      <p>
+        Inicia sesion para administrar productos, procesar pedidos y gestionar tu tienda tecnologica.
+      </p>
+
+      <div class="feature-list">
+        <div class="feature-card">
+          <span>🛒</span>
+          <div>
+            <h3>Ventas centralizadas</h3>
+            <p>Controla catalogo, carrito y compras desde un solo panel.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <span>🔒</span>
+          <div>
+            <h3>Acceso seguro</h3>
+            <p>Autenticacion con control por roles para cada usuario.</p>
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <span>📦</span>
+          <div>
+            <h3>Gestion de pedidos</h3>
+            <p>Seguimiento rapido del estado de cada compra.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-panel">
+      <div class="form-card">
+        <div class="form-header">
+          <h2>Iniciar sesion</h2>
+          <p>Accede a tu cuenta de TechStore Pro</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="input-group">
+            <label for="email">Correo electronico</label>
+            <input id="email" type="email" formControlName="email" placeholder="correo@ejemplo.com" />
+          </div>
+
+          <div class="input-group">
+            <label for="password">Contrasena</label>
+            <input id="password" type="password" formControlName="password" placeholder="Ingresa tu contrasena" />
+          </div>
+
+          <button type="submit" class="login-btn">Ingresar</button>
+          <button type="button" class="register-link" routerLink="/register">Registrate</button>
+        </form>
+
+        <div class="footer-text">
+          <span>TechStore Pro</span> · Plataforma de tienda tecnologica
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

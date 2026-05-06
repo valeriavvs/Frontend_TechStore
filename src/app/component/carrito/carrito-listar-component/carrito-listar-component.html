@@ -1,0 +1,55 @@
+<div class="carrito-page">
+  <header class="header">
+	<div>
+	  <h1>Mi carrito</h1>
+	  <p>Revisa tus productos antes de confirmar tu compra</p>
+	</div>
+	<div class="header-actions">
+	  <a class="btn-back" routerLink="/productos">Volver a productos</a>
+	  <a class="btn-back secondary" routerLink="/mis-pedidos">Mis pedidos</a>
+	</div>
+  </header>
+
+  <section class="panel">
+	<div class="estado" *ngIf="cargando">Cargando carrito...</div>
+	<div class="estado error" *ngIf="!cargando && error">{{ error }}</div>
+	<div class="estado" *ngIf="!cargando && !error && items.length === 0">Tu carrito esta vacio.</div>
+
+	<div class="lista" *ngIf="!cargando && !error && items.length > 0">
+	  <article class="item" *ngFor="let item of items">
+		<img [src]="getImagen(item)" [alt]="item.nombreProducto || 'Producto'" (error)="onErrorImagen($event)" />
+
+		<div class="detalle">
+		  <h3>{{ item.nombreProducto || 'Producto' }}</h3>
+		  <p class="precio">S/ {{ (item.precio ?? item.precioUnitario ?? 0) | number: '1.2-2' }}</p>
+
+		  <div class="acciones-cantidad">
+			<button type="button" (click)="disminuir(item)" [disabled]="procesando || item.cantidad <= 1">-</button>
+			<input
+			  type="number"
+			  min="1"
+			  [value]="item.cantidad"
+			  (change)="cambiarCantidadDesdeInput(item, $any($event.target).value)"
+			  [disabled]="procesando"
+			/>
+			<button type="button" (click)="aumentar(item)" [disabled]="procesando">+</button>
+		  </div>
+		</div>
+
+		<div class="lateral">
+		  <p class="subtotal">S/ {{ (item.subtotal ?? (item.precio ?? item.precioUnitario ?? 0) * item.cantidad) | number: '1.2-2' }}</p>
+		  <button type="button" class="btn-delete" (click)="eliminarItem(item)" [disabled]="procesando">Eliminar</button>
+		</div>
+	  </article>
+
+	  <footer class="resumen">
+		<span>Total</span>
+		<strong>S/ {{ total | number: '1.2-2' }}</strong>
+	  </footer>
+
+	  <button type="button" class="btn-confirm" (click)="confirmarPedido()" [disabled]="procesando || items.length === 0">
+		Confirmar pedido
+	  </button>
+	</div>
+  </section>
+</div>
