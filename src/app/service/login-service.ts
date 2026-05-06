@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { map, Observable } from 'rxjs';
 import { RequestDto } from '../model/request-dto';
@@ -23,7 +23,7 @@ export class LoginService {
     };
 
     return this.http.post<ResponseDto>(this.authUrl, payload, { observe: 'response' }).pipe(
-      map((response) => {
+      map((response: HttpResponse<ResponseDto>) => {
         const body = response.body ?? {};
         const headerAuth = response.headers.get('Authorization') ?? '';
         const headerToken = headerAuth.startsWith('Bearer ') ? headerAuth.replace('Bearer ', '') : '';
@@ -37,8 +37,8 @@ export class LoginService {
     );
   }
 
-  getToken(){
-    return localStorage.getItem('token');
+  obtenerPerfilAutenticado(): Observable<ResponseDto> {
+    return this.http.get<ResponseDto>(`${this.apiUrl}/auth/me`);
   }
 }
 
