@@ -84,7 +84,7 @@ export class ProductoRegistrarComponent implements OnInit {
       descripcion: '',
       precio: 0,
       stock: 0,
-      imagen: '',
+      imagenUrl: '',
       activo: true,
     };
   }
@@ -95,7 +95,7 @@ export class ProductoRegistrarComponent implements OnInit {
   }
 
   guardar(): void {
-    const imagenIngresada = (this.productoForm.imagen ?? '').trim();
+    const imagenIngresada = (this.productoForm.imagenUrl ?? '').trim();
 
     if (imagenIngresada && !esImagenDriveValida(imagenIngresada)) {
       this.notificacionService.warning('La imagen debe ser un enlace o ID valido de Google Drive');
@@ -107,7 +107,7 @@ export class ProductoRegistrarComponent implements OnInit {
       descripcion: (this.productoForm.descripcion ?? '').trim(),
       precio: Number(this.productoForm.precio),
       stock: Number(this.productoForm.stock),
-      imagen: normalizarImagenDrive(imagenIngresada),
+      imagenUrl: normalizarImagenDrive(imagenIngresada),
       activo: this.productoForm.activo,
     };
 

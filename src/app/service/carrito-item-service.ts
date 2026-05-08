@@ -48,7 +48,7 @@ export class CarritoItemService {
       cantidad: item.cantidad,
       nombreProducto: item.nombreProducto ?? item.producto?.nombre ?? '',
       precio,
-      imagen: item.imagen ?? item.producto?.imagen ?? '',
+      imagen: item.imagen ?? item.producto?.imagenUrl ?? '',
       subtotal: item.subtotal ?? precio * item.cantidad,
     };
   }

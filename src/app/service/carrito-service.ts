@@ -82,7 +82,7 @@ export class CarritoService {
                 cantidad: nuevaCantidad,
                 nombreProducto: existente.nombreProducto ?? producto.nombre,
                 precio,
-                imagen: existente.imagen ?? producto.imagen,
+                imagen: existente.imagen ?? producto.imagenUrl,
                 subtotal: precio * nuevaCantidad,
               };
 
@@ -97,7 +97,7 @@ export class CarritoService {
               cantidad: cantidadValida,
               nombreProducto: producto.nombre,
               precio: producto.precio,
-              imagen: producto.imagen,
+              imagen: producto.imagenUrl,
               subtotal: producto.precio * cantidadValida,
             };
 
@@ -155,7 +155,7 @@ export class CarritoService {
       cantidad: cantidadValida,
       nombreProducto: producto.nombre,
       precio: producto.precio,
-      imagen: producto.imagen,
+      imagen: producto.imagenUrl,
       precioUnitario: producto.precio,
       subtotal: producto.precio * cantidadValida,
       producto,
@@ -172,7 +172,7 @@ export class CarritoService {
   private toDtoItem(item: CarritoItem, idCarrito?: number): CarritoItem {
     const precio = item.precio ?? item.precioUnitario ?? item.producto?.precio ?? 0;
     const nombreProducto = item.nombreProducto ?? item.producto?.nombre ?? '';
-    const imagen = item.imagen ?? item.producto?.imagen ?? '';
+    const imagen = item.imagen ?? item.producto?.imagenUrl ?? '';
     const idProducto = item.idProducto ?? item.producto?.id;
 
     return {

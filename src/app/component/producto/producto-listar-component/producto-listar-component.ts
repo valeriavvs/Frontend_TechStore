@@ -228,7 +228,7 @@ export class ProductoListarComponent implements OnInit {
   }
 
   getImagenProducto(producto: Producto): string {
-    return resolverImagenProducto(producto.imagen);
+    return resolverImagenProducto(producto.imagenUrl);
   }
 
   onErrorImagen(event: Event): void {

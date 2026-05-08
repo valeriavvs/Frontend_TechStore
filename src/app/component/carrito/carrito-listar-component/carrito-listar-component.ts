@@ -113,7 +113,7 @@ export class CarritoListarComponent implements OnInit {
   }
 
   getImagen(item: CarritoItem): string {
-    return resolverImagenProducto(item.imagen);
+    return resolverImagenProducto(item.imagenUrl ?? item.imagen);
   }
 
   onErrorImagen(event: Event): void {

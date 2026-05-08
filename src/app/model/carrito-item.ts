@@ -7,6 +7,7 @@ export interface CarritoItem {
   cantidad: number;
   nombreProducto?: string;
   precio?: number;
+  imagenUrl?: string;
   imagen?: string;
   precioUnitario?: number;
   subtotal?: number;
