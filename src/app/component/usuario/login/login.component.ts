@@ -111,14 +111,17 @@ export class LoginComponent implements OnInit {
 
       const container = document.getElementById('googleButton');
       try {
-        if (container) {
-          google.accounts.id.renderButton(container, {
-            theme: 'outline',
-            size: 'large',
-            type: 'standard',
-            text: 'continue_with'
-          });
-        } else {
+          if (container) {
+              // Renderizamos el botón oficial con tema más acorde a la UI
+              google.accounts.id.renderButton(container, {
+                theme: 'filled_blue', // botón con fondo azul
+                size: 'large',
+                type: 'standard',
+                text: 'continue_with',
+                shape: 'pill',
+                logo_alignment: 'left'
+              });
+            } else {
           console.warn('[Login] Contenedor #googleButton no encontrado para renderButton');
         }
       } catch (err) {

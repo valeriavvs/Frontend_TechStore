@@ -244,6 +244,29 @@
   transition: 0.2s ease;
 }
 
+/* Estilos para el contenedor donde Google renderiza el botón */
+#googleButton {
+  margin-top: 12px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Intentamos personalizar el botón renderizado por Google sin romper su estilo interno */
+#googleButton .g_id_signin {
+  width: 100% !important;
+  max-width: 360px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 25px rgba(54, 173, 255, 0.12) !important;
+  font-weight: 700 !important;
+}
+
+/* Ajustes para que el texto e icono se vean mejor */
+#googleButton .g_id_signin span,
+#googleButton .g_id_signin div {
+  align-items: center !important;
+}
+
 .register-link:hover {
   background: rgba(126, 232, 255, 0.16);
 }
