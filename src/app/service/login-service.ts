@@ -11,6 +11,7 @@ import { ResponseDto } from '../model/response-dto';
 export class LoginService {
   private readonly apiUrl = environment.apiUrl;
   private readonly authUrl = `${this.apiUrl}/auth/authenticate`;
+  private readonly authGoogleUrl = `${this.apiUrl}/auth/google`;
   private http: HttpClient = inject(HttpClient);
 
   constructor() { }
@@ -23,22 +24,30 @@ export class LoginService {
     };
 
     return this.http.post<ResponseDto>(this.authUrl, payload, { observe: 'response' }).pipe(
-      map((response: HttpResponse<ResponseDto>) => {
-        const body = response.body ?? {};
-        const headerAuth = response.headers.get('Authorization') ?? '';
-        const headerToken = headerAuth.startsWith('Bearer ') ? headerAuth.replace('Bearer ', '') : '';
-        const bodyToken = body.jwt ?? body.token ?? '';
+      map((response: HttpResponse<ResponseDto>) => this.normalizarRespuestaAuth(response))
+    );
+  }
 
-        return {
-          ...body,
-          jwt: bodyToken || headerToken,
-        };
-      })
+  loginConGoogle(idToken: string): Observable<ResponseDto> {
+    return this.http.post<ResponseDto>(this.authGoogleUrl, { idToken }, { observe: 'response' }).pipe(
+      map((response: HttpResponse<ResponseDto>) => this.normalizarRespuestaAuth(response))
     );
   }
 
   obtenerPerfilAutenticado(): Observable<ResponseDto> {
     return this.http.get<ResponseDto>(`${this.apiUrl}/auth/me`);
+  }
+
+  private normalizarRespuestaAuth(response: HttpResponse<ResponseDto>): ResponseDto {
+    const body = response.body ?? {};
+    const headerAuth = response.headers.get('Authorization') ?? '';
+    const headerToken = headerAuth.startsWith('Bearer ') ? headerAuth.replace('Bearer ', '') : '';
+    const bodyToken = body.jwt ?? body.token ?? '';
+
+    return {
+      ...body,
+      jwt: bodyToken || headerToken,
+    };
   }
 }
 
