@@ -78,53 +78,76 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  onGoogleLogin(): void {
-    console.log('[Login] Click en Continuar con Google');
+  // Eliminado el flujo con prompt. Google renderButton() se usa para mostrar
+  // el botón oficial y el callback manejará la credencial.
 
-    if (!this.configurarGoogleIdentityServices()) {
-      this.notificacionService.error('Google no está disponible en este momento');
+  private configurarGoogleIdentityServices(): void {
+    if (this.googleInicializado) {
       return;
     }
 
-    google.accounts.id.prompt((notification: any) => {
-      console.log('[Login] Prompt de Google ejecutado', notification);
-
-      if (notification?.isNotDisplayed?.() || notification?.isSkippedMoment?.()) {
-        console.warn('[Login] Google no mostró el prompt', notification);
+    this.esperarGoogleDisponible(3000).then((disponible) => {
+      if (!disponible) {
+        console.warn('[Login] Google Identity Services no estuvo disponible en el tiempo esperado');
+        return;
       }
+
+      const googleClientId = (environment as { googleClientId?: string }).googleClientId ?? '';
+      if (!googleClientId) {
+        console.warn('[Login] Falta googleClientId en environment');
+        return;
+      }
+
+      // Inicializa la librería y renderiza el botón oficial dentro del contenedor #googleButton
+      google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: (response: { credential?: string }) => {
+          console.log('[Login] Credential recibido desde Google', response ? 'SI' : 'NO');
+          this.procesarCredentialGoogle(response);
+        },
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      const container = document.getElementById('googleButton');
+      try {
+        if (container) {
+          google.accounts.id.renderButton(container, {
+            theme: 'outline',
+            size: 'large',
+            type: 'standard',
+            text: 'continue_with'
+          });
+        } else {
+          console.warn('[Login] Contenedor #googleButton no encontrado para renderButton');
+        }
+      } catch (err) {
+        console.error('[Login] Error al renderizar el botón de Google', err);
+      }
+
+      this.googleInicializado = true;
+      console.log('[Login] Google Identity Services inicializado y botón renderizado');
     });
   }
 
-  private configurarGoogleIdentityServices(): boolean {
-    if (this.googleInicializado) {
-      return true;
-    }
-
-    if (typeof google === 'undefined' || !google?.accounts?.id) {
-      console.warn('[Login] Google Identity Services aún no está disponible');
-      return false;
-    }
-
-    const googleClientId = (environment as { googleClientId?: string }).googleClientId ?? '';
-
-    if (!googleClientId) {
-      console.warn('[Login] Falta googleClientId en environment');
-      return false;
-    }
-
-    google.accounts.id.initialize({
-      client_id: googleClientId,
-      callback: (response: { credential?: string }) => {
-        console.log('[Login] Credential recibido desde Google', response);
-        this.procesarCredentialGoogle(response);
-      },
-      auto_select: false,
-      cancel_on_tap_outside: true,
+  private esperarGoogleDisponible(timeoutMs: number): Promise<boolean> {
+    const intervalo = 100;
+    const max = Math.ceil(timeoutMs / intervalo);
+    let contador = 0;
+    return new Promise((resolve) => {
+      const timer = setInterval(() => {
+        if (typeof (window as any).google !== 'undefined' && (window as any).google?.accounts?.id) {
+          clearInterval(timer);
+          resolve(true);
+          return;
+        }
+        contador++;
+        if (contador >= max) {
+          clearInterval(timer);
+          resolve(false);
+        }
+      }, intervalo);
     });
-
-    this.googleInicializado = true;
-    console.log('[Login] Google Identity Services inicializado');
-    return true;
   }
 
   private procesarCredentialGoogle(response: { credential?: string }): void {
