@@ -1,18 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of, switchMap } from 'rxjs';
+import { Carrito } from '../../../model/carrito';
 import { CarritoItem } from '../../../model/carrito-item';
 import { CarritoService } from '../../../service/carrito-service';
 import { CarritoItemService } from '../../../service/carrito-item-service';
 import { NotificacionService } from '../../../service/notificacion-service';
 import { resolverImagenProducto } from '../../../utils/imagen-drive.util';
+import { PagoMercadopagoComponent } from '../../pago/pago-mercadopago/pago-mercadopago.component';
+import { RespuestaPago } from '../../../model/pago';
 
 @Component({
   selector: 'app-carrito-listar-component',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, PagoMercadopagoComponent],
   templateUrl: './carrito-listar-component.html',
   styleUrl: './carrito-listar-component.css',
 })
@@ -20,6 +23,7 @@ export class CarritoListarComponent implements OnInit {
   private readonly carritoService = inject(CarritoService);
   private readonly carritoItemService = inject(CarritoItemService);
   private readonly notificacionService = inject(NotificacionService);
+  private readonly router = inject(Router);
 
   items: CarritoItem[] = [];
   idUsuario: number | null = null;
@@ -27,9 +31,12 @@ export class CarritoListarComponent implements OnInit {
   cargando = false;
   procesando = false;
   error = '';
+  emailUsuario: string = '';
+  mostrarFormularioPago = false;
 
   ngOnInit(): void {
     this.idUsuario = this.obtenerIdUsuario();
+    this.emailUsuario = this.obtenerEmailUsuario();
 
     if (!this.idUsuario) {
       this.error = 'No se encontro el usuario en sesion. Inicia sesion nuevamente.';
@@ -77,19 +84,54 @@ export class CarritoListarComponent implements OnInit {
       return;
     }
 
+    // Mostrar formulario de pago en lugar de confirmar directamente
+    this.mostrarFormularioPago = true;
+  }
+
+  onPagoExitoso(respuesta: RespuestaPago): void {
+    console.log('[Carrito] Resultado de pago:', respuesta);
+    const estado = (respuesta.status ?? '').toLowerCase();
+
+    if (estado === 'pending') {
+      this.notificacionService.warning('Tu pago quedó pendiente. No se confirmará el pedido todavía.');
+      return;
+    }
+
+    if (estado !== 'approved') {
+      this.notificacionService.error(
+        `El pago no fue aprobado: ${respuesta.status_detail || respuesta.status || 'estado desconocido'}`
+      );
+      return;
+    }
+
+    if (!this.idCarrito) {
+      return;
+    }
+
+    // Confirmar el pedido después del pago exitoso
     this.procesando = true;
 
     this.carritoService.confirmarPedido(this.idCarrito).subscribe({
       next: () => {
         this.procesando = false;
         this.cargarCarrito();
+        this.mostrarFormularioPago = false;
         this.notificacionService.success('Te enviamos un correo donde te estaremos contactando');
+
+        // Redirigir a mis pedidos después de un tiempo
+        setTimeout(() => {
+          this.router.navigate(['/mis-pedidos']);
+        }, 2000);
       },
       error: (error: HttpErrorResponse) => {
         this.procesando = false;
         this.notificacionService.error(this.obtenerMensajeError(error));
       },
     });
+  }
+
+  onPageCancelado(): void {
+    this.mostrarFormularioPago = false;
   }
 
   eliminarItem(item: CarritoItem): void {
@@ -134,7 +176,7 @@ export class CarritoListarComponent implements OnInit {
     this.error = '';
 
     this.carritoService.buscarPorUsuario(this.idUsuario).pipe(
-      switchMap((carrito) => {
+      switchMap((carrito: Carrito) => {
         this.idCarrito = carrito.id ?? null;
         if (!this.idCarrito) {
           this.items = [];
@@ -145,8 +187,8 @@ export class CarritoListarComponent implements OnInit {
         return this.carritoItemService.listarPorCarrito(this.idCarrito);
       })
     ).subscribe({
-      next: (items) => {
-        this.items = (items ?? []).map((item) => ({
+      next: (items: CarritoItem[]) => {
+        this.items = (items ?? []).map((item: CarritoItem) => ({
           ...item,
           idCarrito: item.idCarrito ?? this.idCarrito ?? undefined,
         }));
@@ -204,6 +246,10 @@ export class CarritoListarComponent implements OnInit {
 
     const id = Number(valor);
     return Number.isNaN(id) || id <= 0 ? null : id;
+  }
+
+  private obtenerEmailUsuario(): string {
+    return localStorage.getItem('email') || '';
   }
 
   private obtenerMensajeError(error: HttpErrorResponse): string {

@@ -1,0 +1,103 @@
+<div class="pago-container">
+  <!-- Botón para abrir formulario -->
+  <button
+    *ngIf="!mostrarFormulario"
+    class="btn-pagar"
+    (click)="abrirFormularioPago()"
+    [disabled]="monto <= 0">
+    <span class="material-icons">payment</span>
+    Pagar con Mercado Pago (S/. {{ monto | number: '1.2-2' }})
+  </button>
+
+  <div *ngIf="mostrarFormulario" class="modal-overlay" (click)="cerrarFormularioPago()">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <p class="eyebrow">Checkout seguro</p>
+          <h2>Paga con tarjeta</h2>
+          <p class="subtitulo">Usa tus tarjetas de prueba de Mercado Pago para completar la compra.</p>
+        </div>
+        <button type="button" class="btn-cerrar" (click)="cerrarFormularioPago()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <aside class="resumen-pago">
+          <h3>Resumen</h3>
+          <div class="resumen-item">
+            <span>Total a pagar</span>
+            <strong>S/. {{ monto | number: '1.2-2' }}</strong>
+          </div>
+          <div class="resumen-item">
+            <span>Correo</span>
+            <strong>{{ email || 'No especificado' }}</strong>
+          </div>
+          <div class="resumen-item">
+            <span>Descripción</span>
+            <strong>{{ descripcion }}</strong>
+          </div>
+        </aside>
+
+        <form id="payment-form" class="card-form">
+          <div class="campo campo-completo">
+            <label for="mp-cardholder-name">Titular</label>
+            <div id="mp-cardholder-name" class="mp-field"></div>
+          </div>
+
+          <div class="campo campo-completo">
+            <label for="mp-card-number">Número de tarjeta</label>
+            <div id="mp-card-number" class="mp-field"></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="campo">
+              <label for="mp-card-expiration">Vencimiento</label>
+              <div id="mp-card-expiration" class="mp-field"></div>
+            </div>
+
+            <div class="campo">
+              <label for="mp-card-security">CVV</label>
+              <div id="mp-card-security" class="mp-field"></div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="campo">
+              <label for="mp-card-identification-type">Tipo de documento</label>
+              <div id="mp-card-identification-type" class="mp-field"></div>
+            </div>
+
+            <div class="campo">
+              <label for="mp-card-identification-number">Número de documento</label>
+              <div id="mp-card-identification-number" class="mp-field"></div>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="campo">
+              <label for="mp-card-issuer">Emisor</label>
+              <div id="mp-card-issuer" class="mp-field"></div>
+            </div>
+
+            <div class="campo">
+              <label for="mp-card-installments">Cuotas</label>
+              <div id="mp-card-installments" class="mp-field"></div>
+            </div>
+          </div>
+
+          <div class="form-acciones">
+            <button type="button" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+            <button type="submit" class="btn-confirmar" [disabled]="procesando">
+              <span *ngIf="procesando">Procesando...</span>
+              <span *ngIf="!procesando">Pagar ahora</span>
+            </button>
+          </div>
+
+          <p class="nota-soporte">Tarjetas TEST, cuotas y validaciones se resuelven con Mercado Pago.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

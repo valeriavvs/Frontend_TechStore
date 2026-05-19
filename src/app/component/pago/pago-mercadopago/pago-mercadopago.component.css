@@ -1,0 +1,254 @@
+.pago-container {
+  margin-top: 20px;
+}
+
+.btn-pagar {
+  width: 100%;
+  padding: 14px 18px;
+  background: linear-gradient(90deg, #32d9ff, #4f8cff);
+  color: #03111d;
+  border: 0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 10px 24px rgba(79, 140, 255, 0.28);
+}
+
+.btn-pagar:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(79, 140, 255, 0.35);
+}
+
+.btn-pagar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.material-icons {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 10, 20, 0.68);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 18px;
+}
+
+.modal-contenido {
+  width: min(960px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  border-radius: 20px;
+  border: 1px solid rgba(82, 167, 255, 0.22);
+  background: linear-gradient(180deg, rgba(11, 30, 54, 0.98), rgba(6, 17, 31, 0.98));
+  color: #eaf6ff;
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+  animation: slideIn 0.22s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 22px 14px;
+  border-bottom: 1px solid rgba(126, 194, 255, 0.16);
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: #7ec2ff;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.subtitulo {
+  margin: 8px 0 0;
+  color: #b5cfe7;
+  line-height: 1.5;
+}
+
+.btn-cerrar {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 18px;
+  padding: 20px 22px 22px;
+}
+
+.resumen-pago {
+  align-self: start;
+  background: linear-gradient(180deg, rgba(15, 53, 89, 0.95), rgba(18, 39, 68, 0.95));
+  border: 1px solid rgba(82, 167, 255, 0.18);
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.resumen-pago h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.resumen-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.resumen-item:last-child {
+  border-bottom: 0;
+}
+
+.resumen-item span {
+  color: #b5cfe7;
+}
+
+.resumen-item strong {
+  text-align: right;
+  color: #fff;
+}
+
+.card-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+.campo label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #d6e9fb;
+}
+
+.mp-field {
+  min-height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(126, 194, 255, 0.24);
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.form-acciones {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.btn-cancelar,
+.btn-confirmar {
+  flex: 1;
+  border: 0;
+  border-radius: 12px;
+  min-height: 48px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.btn-cancelar {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.btn-confirmar {
+  background: linear-gradient(90deg, #32d9ff, #4f8cff);
+  color: #03111d;
+  box-shadow: 0 10px 24px rgba(79, 140, 255, 0.25);
+}
+
+.btn-cancelar:hover,
+.btn-confirmar:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-confirmar:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.nota-soporte {
+  margin: 0;
+  color: #9fb9d4;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .modal-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .form-acciones {
+    flex-direction: column;
+  }
+}
+
+
+

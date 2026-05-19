@@ -47,9 +47,14 @@
 		<strong>S/ {{ total | number: '1.2-2' }}</strong>
 	  </footer>
 
-	  <button type="button" class="btn-confirm" (click)="confirmarPedido()" [disabled]="procesando || items.length === 0">
-		Confirmar pedido
-	  </button>
+	  <!-- Componente de pago -->
+	  <app-pago-mercadopago
+		[monto]="total"
+		[email]="emailUsuario"
+		descripcion="Compra TechStore Pro"
+		(pagoExitoso)="onPagoExitoso($event)"
+		(pagoCancelado)="onPageCancelado()">
+	  </app-pago-mercadopago>
 	</div>
   </section>
 </div>
