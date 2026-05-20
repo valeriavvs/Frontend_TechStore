@@ -187,6 +187,60 @@
   overflow: hidden;
 }
 
+.mp-field input,
+.mp-field select {
+  width: 100%;
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #eaf6ff;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.mp-field input::placeholder,
+.mp-field select::placeholder {
+  color: rgba(234, 246, 255, 0.5);
+}
+
+.mp-field input:focus,
+.mp-field select:focus {
+  outline: none;
+  border: 1px solid rgba(79, 140, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+input#mp-cardholder-name,
+input#mp-card-identification-number,
+select#mp-card-issuer,
+select#mp-card-installments {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 14px;
+  border: 1px solid rgba(126, 194, 255, 0.24);
+  background: rgba(255, 255, 255, 0.06);
+  color: #eaf6ff;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input#mp-cardholder-name::placeholder,
+input#mp-card-identification-number::placeholder {
+  color: rgba(234, 246, 255, 0.5);
+}
+
+input#mp-cardholder-name:focus,
+input#mp-card-identification-number:focus,
+select#mp-card-issuer:focus,
+select#mp-card-installments:focus {
+  outline: none;
+  border: 1px solid rgba(79, 140, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .form-acciones {
   display: flex;
   gap: 12px;
