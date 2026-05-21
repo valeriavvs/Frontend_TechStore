@@ -40,32 +40,32 @@
         <form id="payment-form" class="card-form">
           <div class="campo campo-completo">
             <label for="mp-cardholder-name">Titular</label>
-            <div id="mp-cardholder-name" class="mp-field"></div>
+            <input type="text" id="mp-cardholder-name" class="mp-field" placeholder="Nombre como aparece en la tarjeta" />
           </div>
 
           <div class="campo campo-completo">
             <label for="mp-card-number">Número de tarjeta</label>
-            <div id="mp-card-number" class="mp-field"></div>
+            <input type="text" id="mp-card-number" class="mp-field" placeholder="0000 0000 0000 0000" />
           </div>
 
           <div class="grid-2">
             <div class="campo">
               <label for="mp-card-expiration">Vencimiento</label>
-              <div id="mp-card-expiration" class="mp-field"></div>
+              <input type="text" id="mp-card-expiration" class="mp-field" placeholder="MM/AA" />
             </div>
 
             <div class="campo">
               <label for="mp-card-security">CVV</label>
-              <div id="mp-card-security" class="mp-field"></div>
+              <input type="text" id="mp-card-security" class="mp-field" placeholder="CVV" />
             </div>
           </div>
 
           <!-- Campos ocultos pero funcionando para Mercado Pago -->
           <div style="display: none;">
-            <div id="mp-card-identification-type" class="mp-field"></div>
-            <div id="mp-card-identification-number" class="mp-field"></div>
-            <div id="mp-card-issuer" class="mp-field"></div>
-            <div id="mp-card-installments" class="mp-field"></div>
+            <select id="mp-card-identification-type" class="mp-field"></select>
+            <input type="text" id="mp-card-identification-number" class="mp-field" placeholder="Número de documento" />
+            <select id="mp-card-issuer" class="mp-field"></select>
+            <select id="mp-card-installments" class="mp-field"></select>
           </div>
 
           <div class="form-acciones">
