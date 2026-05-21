@@ -152,7 +152,7 @@
 .card-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .grid-2 {
@@ -184,7 +184,8 @@
   border-radius: 14px;
   border: 1px solid rgba(126, 194, 255, 0.24);
   background: rgba(255, 255, 255, 0.06);
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
 .mp-field input,
@@ -193,7 +194,7 @@
   height: 52px;
   border: none;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.06);
+  background: transparent;
   color: #eaf6ff;
   padding: 0 14px;
   font-size: 14px;
@@ -215,30 +216,41 @@
 input#mp-cardholder-name,
 input#mp-card-identification-number,
 select#mp-card-issuer,
-select#mp-card-installments {
+select#mp-card-installments,
+input#mp-card-number,
+input#mp-card-expiration,
+input#mp-card-security,
+select#mp-card-identification-type {
   width: 100%;
   min-height: 52px;
   border-radius: 14px;
-  border: 1px solid rgba(126, 194, 255, 0.24);
-  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  background: transparent;
   color: #eaf6ff;
   padding: 0 14px;
   font-size: 14px;
   font-family: inherit;
+  cursor: pointer;
 }
 
 input#mp-cardholder-name::placeholder,
-input#mp-card-identification-number::placeholder {
+input#mp-card-identification-number::placeholder,
+input#mp-card-number::placeholder,
+input#mp-card-expiration::placeholder,
+input#mp-card-security::placeholder {
   color: rgba(234, 246, 255, 0.5);
 }
 
 input#mp-cardholder-name:focus,
 input#mp-card-identification-number:focus,
+input#mp-card-number:focus,
+input#mp-card-expiration:focus,
+input#mp-card-security:focus,
 select#mp-card-issuer:focus,
-select#mp-card-installments:focus {
+select#mp-card-installments:focus,
+select#mp-card-identification-type:focus {
   outline: none;
-  border: 1px solid rgba(79, 140, 255, 0.6);
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .form-acciones {

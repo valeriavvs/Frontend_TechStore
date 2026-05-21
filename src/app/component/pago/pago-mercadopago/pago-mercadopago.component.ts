@@ -60,13 +60,25 @@ export class PagoMercadopagoComponent implements OnInit {
       return;
     }
 
+    // Esperar a que MercadoPago esté disponible
+    this.esperarMercadoPago(0);
+  }
+
+  private esperarMercadoPago(intentos: number): void {
     if (typeof MercadoPago === 'undefined') {
-      this.notificacionService.error('No se pudo cargar Mercado Pago');
+      if (intentos > 50) { // máximo 50 intentos = 5 segundos
+        console.error('[MercadoPago] No se cargó después de múltiples intentos');
+        this.notificacionService.error('No se pudo cargar Mercado Pago. Intenta de nuevo.');
+        this.cerrarFormularioPago();
+        return;
+      }
+      setTimeout(() => this.esperarMercadoPago(intentos + 1), 100);
       return;
     }
 
     try {
       this.destruirCardForm();
+      console.log('[MercadoPago] SDK cargado, inicializando CardForm');
 
       const mp = new MercadoPago(this.publicKey, { locale: 'es-PE' });
       this.cardFormInstance = mp.cardForm({
