@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PagoService } from '../../../service/pago-service';
 import { NotificacionService } from '../../../service/notificacion-service';
-import { Pago, RespuestaPago } from '../../../model/pago';
+import { CheckoutConfirmarRequest, RespuestaPago } from '../../../model/pago';
 import { environment } from '../../../environments/environment';
 
 declare const MercadoPago: any;
@@ -19,6 +19,7 @@ export class PagoMercadopagoComponent implements OnInit {
   @Input() monto: number = 0;
   @Input() email: string = '';
   @Input() descripcion: string = 'Compra TechStore';
+  @Input() carritoId: number | null = null;
   @Output() pagoExitoso = new EventEmitter<RespuestaPago>();
   @Output() pagoCancelado = new EventEmitter<void>();
 
@@ -147,6 +148,11 @@ export class PagoMercadopagoComponent implements OnInit {
       return;
     }
 
+    if (!this.carritoId) {
+      this.notificacionService.error('No se encontró un carrito válido para confirmar el pago');
+      return;
+    }
+
     const datosCardForm = this.cardFormInstance.getCardFormData?.() ?? {};
     const token = datosCardForm.token ?? datosCardForm.cardToken ?? '';
     const paymentMethodId = datosCardForm.paymentMethodId ?? datosCardForm.payment_method_id ?? '';
@@ -159,7 +165,8 @@ export class PagoMercadopagoComponent implements OnInit {
       return;
     }
 
-    const datoPago: Pago = {
+    const datoPago: CheckoutConfirmarRequest = {
+      carritoId: this.carritoId,
       token,
       issuer_id: String(issuerId),
       payment_method_id: String(paymentMethodId),
@@ -177,7 +184,7 @@ export class PagoMercadopagoComponent implements OnInit {
     this.pagoService.procesarPago(datoPago).subscribe({
       next: (respuesta: RespuestaPago) => {
         this.procesando = false;
-        const estado = (respuesta.status ?? '').toLowerCase();
+        const estado = this.normalizarEstadoPago(respuesta);
 
         console.log('[MercadoPago] Respuesta del backend', respuesta);
 
@@ -189,9 +196,7 @@ export class PagoMercadopagoComponent implements OnInit {
         }
 
         if (estado === 'pending') {
-          this.notificacionService.warning('Tu pago quedó pendiente de confirmación');
-          this.pagoExitoso.emit(respuesta);
-          this.cerrarSoloFormulario();
+          this.notificacionService.warning('Tu pago quedó pendiente de confirmación. Tu carrito no fue vaciado.');
           return;
         }
 
@@ -202,9 +207,32 @@ export class PagoMercadopagoComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.procesando = false;
         console.error('[MercadoPago] error al procesar pago', error);
-        this.notificacionService.error('Error al procesar el pago');
+
+        if (error.status === 402) {
+          const cuerpo = error.error as { paymentStatus?: string; status?: string; message?: string; detalle?: string; status_detail?: string } | string | null;
+          const estado = typeof cuerpo === 'object' && cuerpo ? String(cuerpo.paymentStatus ?? cuerpo.status ?? '').toLowerCase() : '';
+          const mensajeBase = estado === 'pending'
+            ? 'Tu pago quedó pendiente. Tu carrito se mantiene intacto.'
+            : estado === 'rejected'
+              ? 'Tu pago fue rechazado. Tu carrito se mantiene intacto.'
+              : 'Tu pago quedó pendiente o fue rechazado. Tu carrito se mantiene intacto.';
+
+          this.notificacionService.warning(this.obtenerMensajeErrorPago(error, mensajeBase));
+          return;
+        }
+
+        if (error.status === 500) {
+          this.notificacionService.error('Ocurrió un problema en el servidor. Vuelve a intentar o contacta soporte.');
+          return;
+        }
+
+        this.notificacionService.error(this.obtenerMensajeErrorPago(error, 'Error al procesar el pago'));
       },
     });
+  }
+
+  private normalizarEstadoPago(respuesta: RespuestaPago): string {
+    return String(respuesta.paymentStatus ?? respuesta.status ?? '').toLowerCase();
   }
 
   private cerrarSoloFormulario(): void {
@@ -222,6 +250,20 @@ export class PagoMercadopagoComponent implements OnInit {
     this.mostrarFormulario = false;
     this.procesando = false;
     this.pagoCancelado.emit();
+  }
+
+  private obtenerMensajeErrorPago(error: HttpErrorResponse, mensajeDefault: string): string {
+    const body = error.error as { message?: string; detalle?: string; status_detail?: string; paymentStatus?: string; status?: string } | string | null;
+
+    if (typeof body === 'string' && body.trim()) {
+      return body;
+    }
+
+    if (body && typeof body === 'object') {
+      return body.message || body.detalle || body.status_detail || mensajeDefault;
+    }
+
+    return mensajeDefault;
   }
 }
 

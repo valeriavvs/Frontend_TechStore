@@ -50,6 +50,7 @@
 	  <!-- Componente de pago -->
 	  <app-pago-mercadopago
 		[monto]="total"
+		[carritoId]="idCarrito"
 		[email]="emailUsuario"
 		descripcion="Compra TechStore Pro"
 		(pagoExitoso)="onPagoExitoso($event)"

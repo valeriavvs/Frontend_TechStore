@@ -10,12 +10,19 @@ export interface Pago {
   };
 }
 
+export interface CheckoutConfirmarRequest extends Pago {
+  carritoId: number;
+}
+
 export interface RespuestaPago {
   id?: string;
   status: string;
+  paymentStatus?: string;
   status_detail?: string;
   transaction_amount?: number;
   description?: string;
+  carritoId?: number;
+  pedidoId?: number;
   payer?: {
     email: string;
   };

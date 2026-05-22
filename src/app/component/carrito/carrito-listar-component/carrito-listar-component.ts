@@ -73,24 +73,9 @@ export class CarritoListarComponent implements OnInit {
     this.cambiarCantidad(item, nuevaCantidad);
   }
 
-  confirmarPedido(): void {
-    if (this.items.length === 0) {
-      this.notificacionService.warning('Tu carrito esta vacio');
-      return;
-    }
-
-    if (!this.idCarrito) {
-      this.notificacionService.error('No se encontro un carrito valido para confirmar');
-      return;
-    }
-
-    // Mostrar formulario de pago en lugar de confirmar directamente
-    this.mostrarFormularioPago = true;
-  }
-
   onPagoExitoso(respuesta: RespuestaPago): void {
     console.log('[Carrito] Resultado de pago:', respuesta);
-    const estado = (respuesta.status ?? '').toLowerCase();
+    const estado = String(respuesta.paymentStatus ?? respuesta.status ?? '').toLowerCase();
 
     if (estado === 'pending') {
       this.notificacionService.warning('Tu pago quedó pendiente. No se confirmará el pedido todavía.');
@@ -108,26 +93,15 @@ export class CarritoListarComponent implements OnInit {
       return;
     }
 
-    // Confirmar el pedido después del pago exitoso
     this.procesando = true;
+    this.mostrarFormularioPago = false;
+    this.cargarCarrito();
+    this.procesando = false;
+    this.notificacionService.success('Pago aprobado. Te enviamos un correo donde te estaremos contactando.');
 
-    this.carritoService.confirmarPedido(this.idCarrito).subscribe({
-      next: () => {
-        this.procesando = false;
-        this.cargarCarrito();
-        this.mostrarFormularioPago = false;
-        this.notificacionService.success('Te enviamos un correo donde te estaremos contactando');
-
-        // Redirigir a mis pedidos después de un tiempo
-        setTimeout(() => {
-          this.router.navigate(['/mis-pedidos']);
-        }, 2000);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.procesando = false;
-        this.notificacionService.error(this.obtenerMensajeError(error));
-      },
-    });
+    setTimeout(() => {
+      this.router.navigate(['/mis-pedidos']);
+    }, 2000);
   }
 
   onPageCancelado(): void {
@@ -252,39 +226,4 @@ export class CarritoListarComponent implements OnInit {
     return localStorage.getItem('email') || '';
   }
 
-  private obtenerMensajeError(error: HttpErrorResponse): string {
-    const body = error.error as { message?: string; detalle?: string } | string | null;
-
-    if (typeof body === 'string' && body.trim()) {
-      return body;
-    }
-
-    if (body && typeof body === 'object') {
-      if (body.message) {
-        return body.message;
-      }
-
-      if (body.detalle) {
-        return body.detalle;
-      }
-    }
-
-    if (error.status === 409) {
-      return 'No hay stock suficiente para confirmar tu pedido.';
-    }
-
-    if (error.status === 404) {
-      return 'Uno o mas productos ya no existen.';
-    }
-
-    if (error.status === 400) {
-      return 'La cantidad de uno de los productos es invalida.';
-    }
-
-    if (error.status === 403) {
-      return 'No tienes permisos para confirmar este pedido.';
-    }
-
-    return 'No se pudo confirmar el pedido';
-  }
 }
