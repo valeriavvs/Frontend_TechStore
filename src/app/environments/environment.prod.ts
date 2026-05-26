@@ -7,5 +7,5 @@ export const environment: {
   production: true,
   apiUrl: 'https://backend-techstore-rmoe.onrender.com/api',
   googleClientId: '737933803948-0899vh4spol2kl69amqgbfpl7enm6jvc.apps.googleusercontent.com',
-  mercadoPagoPublicKey: 'TEST-3ad15b2d-05ae-4495-81f2-82b1c50d7c07',
+  mercadoPagoPublicKey: 'APP_USR-df1a7a43-b6d3-4ce0-9144-16efd94150ab',
 };
