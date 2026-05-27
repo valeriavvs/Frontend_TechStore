@@ -84,7 +84,8 @@ export class PagoMercadopagoComponent implements OnInit {
       const mp = new MercadoPago(this.publicKey, { locale: 'es-PE' });
       this.cardFormInstance = mp.cardForm({
         amount: String(this.monto.toFixed(2)),
-        iframe: false,
+        // Mercado Pago monta los campos seguros dentro de los contenedores con iframe.
+        iframe: true,
         form: {
           id: 'payment-form',
           cardholderName: {
@@ -129,6 +130,7 @@ export class PagoMercadopagoComponent implements OnInit {
             }
 
             console.log('[MercadoPago] CardForm montado correctamente');
+            setTimeout(() => this.verificarMontajeCardForm(), 0);
           },
           onSubmit: async (event: Event) => {
             event.preventDefault();
@@ -241,6 +243,24 @@ export class PagoMercadopagoComponent implements OnInit {
 
   private normalizarEstadoPago(respuesta: RespuestaPago): string {
     return String(respuesta.paymentStatus ?? respuesta.status ?? '').toLowerCase();
+  }
+
+  private verificarMontajeCardForm(): void {
+    const campos = ['mp-card-number', 'mp-card-expiration', 'mp-card-security'];
+
+    campos.forEach((id) => {
+      const elemento = document.getElementById(id);
+      console.log('[MercadoPago] verificación de montaje', {
+        id,
+        tagName: elemento?.tagName,
+        childElementCount: elemento?.childElementCount,
+        innerHTML: elemento?.innerHTML,
+      });
+
+      if (!elemento || elemento.childElementCount === 0) {
+        console.warn(`[MercadoPago] el campo ${id} no tiene contenido montado todavía`);
+      }
+    });
   }
 
   private cerrarSoloFormulario(): void {
