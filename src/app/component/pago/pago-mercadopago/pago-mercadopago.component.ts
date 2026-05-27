@@ -132,7 +132,15 @@ export class PagoMercadopagoComponent implements OnInit {
           },
           onSubmit: async (event: Event) => {
             event.preventDefault();
+            console.log('[MercadoPago] onSubmit disparado');
             await this.enviarPago();
+          },
+          onFetching: (resource: unknown) => {
+            console.log('[MercadoPago] onFetching', resource);
+          },
+          onError: (error: unknown) => {
+            console.error('[MercadoPago] onError', error);
+            this.notificacionService.error('Mercado Pago no pudo validar la tarjeta');
           },
         },
       });
@@ -242,6 +250,7 @@ export class PagoMercadopagoComponent implements OnInit {
   }
 
   private destruirCardForm(): void {
+    this.cardFormInstance?.unmount?.();
     this.cardFormInstance = null;
   }
 
